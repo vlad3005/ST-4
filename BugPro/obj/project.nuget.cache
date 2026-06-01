@@ -1,10 +1,14 @@
 {
   "version": 2,
-  "dgSpecHash": "4VSmDtVkNCw=",
+  "dgSpecHash": "vF3PEOVN0uA=",
   "success": true,
-  "projectFilePath": "C:\\Users\\vladb\\UT2026\\ST-4\\BugPro\\BugPro.csproj",
+  "projectFilePath": "c:\\Users\\vladb\\UT2026\\ST-4\\BugPro\\BugPro.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\vladb\\.nuget\\packages\\stateless\\5.13.0\\stateless.5.13.0.nupkg.sha512"
+    "C:\\Users\\vladb\\.nuget\\packages\\stateless\\5.13.0\\stateless.5.13.0.nupkg.sha512",
+    "C:\\Users\\vladb\\.nuget\\packages\\microsoft.netcore.app.ref\\9.0.16\\microsoft.netcore.app.ref.9.0.16.nupkg.sha512",
+    "C:\\Users\\vladb\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\9.0.16\\microsoft.windowsdesktop.app.ref.9.0.16.nupkg.sha512",
+    "C:\\Users\\vladb\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\9.0.16\\microsoft.aspnetcore.app.ref.9.0.16.nupkg.sha512",
+    "C:\\Users\\vladb\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\9.0.16\\microsoft.netcore.app.host.win-x64.9.0.16.nupkg.sha512"
   ],
   "logs": []
 }

@@ -5,258 +5,276 @@ using System;
 namespace BugTests
 {
     [TestClass]
-    public class BugTests
+    public class WorkflowTests
     {
-        private Bug _bug = null!;
+        private Bug _testBug = null!;
 
         [TestInitialize]
-        public void Setup()
+        public void Init()
         {
-            _bug = new Bug();
+            _testBug = new Bug();
         }
 
         [TestMethod]
-        public void Test_InitialState_IsNew()
+        public void Bug_Starts_In_Created_State()
         {
-            Assert.AreEqual(State.New, _bug.CurrentState);
+            Assert.AreEqual(BugState.Created, _testBug.CurrentState);
         }
 
         [TestMethod]
-        public void Test_CreateBag_TransitionsToAnalysis()
+        public void BeginTriage_FromCreated_MovesToTriage()
         {
-            _bug.Fire(Trigger.Create);
-            Assert.AreEqual(State.Analysis, _bug.CurrentState);
+            _testBug.ExecuteAction(BugAction.BeginTriage);
+            Assert.AreEqual(BugState.Triage, _testBug.CurrentState);
         }
 
         [TestMethod]
-        public void Test_AnalysisToFixing_Success()
+        public void Triage_RejectAsNotDefect_ClosesBug()
         {
-            _bug.Fire(Trigger.Create);
-            _bug.Fire(Trigger.AssignToFix);
-            Assert.AreEqual(State.Fixing, _bug.CurrentState);
+            _testBug.ExecuteAction(BugAction.BeginTriage);
+            _testBug.ExecuteAction(BugAction.MarkAsNotDefect);
+            Assert.AreEqual(BugState.Closed, _testBug.CurrentState);
         }
 
         [TestMethod]
-        public void Test_RejectAsNotADefect_Success()
+        public void Triage_RejectAsDuplicate_ClosesBug()
         {
-            _bug.Fire(Trigger.Create);
-            _bug.Fire(Trigger.DeclineNotADefect);
-            Assert.AreEqual(State.Closed, _bug.CurrentState);
+            _testBug.ExecuteAction(BugAction.BeginTriage);
+            _testBug.ExecuteAction(BugAction.MarkAsDuplicate);
+            Assert.AreEqual(BugState.Closed, _testBug.CurrentState);
         }
 
         [TestMethod]
-        public void Test_RejectAsWontFix_Success()
+        public void Triage_RejectAsWontFix_ClosesBug()
         {
-            _bug.Fire(Trigger.Create);
-            _bug.Fire(Trigger.DeclineWontFix);
-            Assert.AreEqual(State.Closed, _bug.CurrentState);
+            _testBug.ExecuteAction(BugAction.BeginTriage);
+            _testBug.ExecuteAction(BugAction.MarkAsWontFix);
+            Assert.AreEqual(BugState.Closed, _testBug.CurrentState);
         }
 
         [TestMethod]
-        public void Test_RejectAsDuplicate_Success()
+        public void Triage_To_Development_Transition()
         {
-            _bug.Fire(Trigger.Create);
-            _bug.Fire(Trigger.DeclineDuplicate);
-            Assert.AreEqual(State.Closed, _bug.CurrentState);
+            _testBug.ExecuteAction(BugAction.BeginTriage);
+            _testBug.ExecuteAction(BugAction.StartDevelopment);
+            
+            Assert.AreEqual(BugState.Development, _testBug.CurrentState);
         }
 
         [TestMethod]
-        public void Test_FixingToAnalysis_NoTimeNow()
+        public void Development_PostponeLackOfTime_ReturnsToTriage()
         {
-            _bug.Fire(Trigger.Create);
-            _bug.Fire(Trigger.AssignToFix);
-            _bug.Fire(Trigger.NoTimeNow);
-            Assert.AreEqual(State.Analysis, _bug.CurrentState);
+            _testBug.ExecuteAction(BugAction.BeginTriage);
+            _testBug.ExecuteAction(BugAction.StartDevelopment);
+            _testBug.ExecuteAction(BugAction.PostponeLackOfTime);
+            Assert.AreEqual(BugState.Triage, _testBug.CurrentState);
         }
 
         [TestMethod]
-        public void Test_FixingToAnalysis_NeedSeparateSolution()
+        public void Development_RequireArchitecturalChange_ReturnsToTriage()
         {
-            _bug.Fire(Trigger.Create);
-            _bug.Fire(Trigger.AssignToFix);
-            _bug.Fire(Trigger.NeedSeparateSolution);
-            Assert.AreEqual(State.Analysis, _bug.CurrentState);
+            _testBug.ExecuteAction(BugAction.BeginTriage);
+            _testBug.ExecuteAction(BugAction.StartDevelopment);
+            _testBug.ExecuteAction(BugAction.RequireArchitecturalChange);
+            Assert.AreEqual(BugState.Triage, _testBug.CurrentState);
         }
 
         [TestMethod]
-        public void Test_FixingToAnalysis_OtherProductProblem()
+        public void Development_MoveToOtherProduct_ReturnsToTriage()
         {
-            _bug.Fire(Trigger.Create);
-            _bug.Fire(Trigger.AssignToFix);
-            _bug.Fire(Trigger.OtherProductProblem);
-            Assert.AreEqual(State.Analysis, _bug.CurrentState);
+            _testBug.ExecuteAction(BugAction.BeginTriage);
+            _testBug.ExecuteAction(BugAction.StartDevelopment);
+            _testBug.ExecuteAction(BugAction.MoveToOtherProduct);
+            Assert.AreEqual(BugState.Triage, _testBug.CurrentState);
         }
 
         [TestMethod]
-        public void Test_FixingToAnalysis_NeedMoreInfo()
+        public void Development_RequestMoreInformation_ReturnsToTriage()
         {
-            _bug.Fire(Trigger.Create);
-            _bug.Fire(Trigger.AssignToFix);
-            _bug.Fire(Trigger.NeedMoreInfo);
-            Assert.AreEqual(State.Analysis, _bug.CurrentState);
+            _testBug.ExecuteAction(BugAction.BeginTriage);
+            _testBug.ExecuteAction(BugAction.StartDevelopment);
+            _testBug.ExecuteAction(BugAction.RequestMoreInformation);
+            Assert.AreEqual(BugState.Triage, _testBug.CurrentState);
         }
 
         [TestMethod]
-        public void Test_FixingToCannotReproduceReview()
+        public void Developer_CannotReproduce_MovesTo_UnreproducibleCheck()
         {
-            _bug.Fire(Trigger.Create);
-            _bug.Fire(Trigger.AssignToFix);
-            _bug.Fire(Trigger.DeveloperCannotReproduce);
-            Assert.AreEqual(State.CannotReproduceReview, _bug.CurrentState);
+            _testBug.ExecuteAction(BugAction.BeginTriage);
+            _testBug.ExecuteAction(BugAction.StartDevelopment);
+            _testBug.ExecuteAction(BugAction.CannotReproduce);
+            
+            Assert.AreEqual(BugState.UnreproducibleCheck, _testBug.CurrentState);
         }
 
         [TestMethod]
-        public void Test_CannotReproduceReview_ToClosed()
+        public void UnreproducibleCheck_Confirm_ClosesBug()
         {
-            _bug.Fire(Trigger.Create);
-            _bug.Fire(Trigger.AssignToFix);
-            _bug.Fire(Trigger.DeveloperCannotReproduce);
-            _bug.Fire(Trigger.TesterConfirmCannotReproduce);
-            Assert.AreEqual(State.Closed, _bug.CurrentState);
+            _testBug.ExecuteAction(BugAction.BeginTriage);
+            _testBug.ExecuteAction(BugAction.StartDevelopment);
+            _testBug.ExecuteAction(BugAction.CannotReproduce);
+            _testBug.ExecuteAction(BugAction.ConfirmCannotReproduce);
+            
+            Assert.AreEqual(BugState.Closed, _testBug.CurrentState);
         }
 
         [TestMethod]
-        public void Test_CannotReproduceReview_ToAnalysis()
+        public void UnreproducibleCheck_Reject_ReturnsToTriage()
         {
-            _bug.Fire(Trigger.Create);
-            _bug.Fire(Trigger.AssignToFix);
-            _bug.Fire(Trigger.DeveloperCannotReproduce);
-            _bug.Fire(Trigger.TesterDenyCannotReproduce);
-            Assert.AreEqual(State.Analysis, _bug.CurrentState);
+            _testBug.ExecuteAction(BugAction.BeginTriage);
+            _testBug.ExecuteAction(BugAction.StartDevelopment);
+            _testBug.ExecuteAction(BugAction.CannotReproduce);
+            _testBug.ExecuteAction(BugAction.RejectCannotReproduce);
+            
+            Assert.AreEqual(BugState.Triage, _testBug.CurrentState);
         }
 
         [TestMethod]
-        public void Test_FixingToInReview()
+        public void FinishDevelopment_MovesTo_CodeReview()
         {
-            _bug.Fire(Trigger.Create);
-            _bug.Fire(Trigger.AssignToFix);
-            _bug.Fire(Trigger.Fixed);
-            Assert.AreEqual(State.InReview, _bug.CurrentState);
+            _testBug.ExecuteAction(BugAction.BeginTriage);
+            _testBug.ExecuteAction(BugAction.StartDevelopment);
+            _testBug.ExecuteAction(BugAction.FinishDevelopment);
+            
+            Assert.AreEqual(BugState.CodeReview, _testBug.CurrentState);
         }
 
         [TestMethod]
-        public void Test_ReviewPassed_ToTesting()
+        public void CodeReview_Reject_ReturnsTo_Development()
         {
-            _bug.Fire(Trigger.Create);
-            _bug.Fire(Trigger.AssignToFix);
-            _bug.Fire(Trigger.Fixed);
-            _bug.Fire(Trigger.ReviewPassed);
-            Assert.AreEqual(State.Testing, _bug.CurrentState);
+            _testBug.ExecuteAction(BugAction.BeginTriage);
+            _testBug.ExecuteAction(BugAction.StartDevelopment);
+            _testBug.ExecuteAction(BugAction.FinishDevelopment);
+            _testBug.ExecuteAction(BugAction.RejectCodeReview);
+            
+            Assert.AreEqual(BugState.Development, _testBug.CurrentState);
         }
 
         [TestMethod]
-        public void Test_ReviewFailed_ToFixing()
+        public void CodeReview_Approve_MovesTo_QA()
         {
-            _bug.Fire(Trigger.Create);
-            _bug.Fire(Trigger.AssignToFix);
-            _bug.Fire(Trigger.Fixed);
-            _bug.Fire(Trigger.ReviewFailed);
-            Assert.AreEqual(State.Fixing, _bug.CurrentState);
+            _testBug.ExecuteAction(BugAction.BeginTriage);
+            _testBug.ExecuteAction(BugAction.StartDevelopment);
+            _testBug.ExecuteAction(BugAction.FinishDevelopment);
+            _testBug.ExecuteAction(BugAction.ApproveCodeReview);
+            
+            Assert.AreEqual(BugState.QA, _testBug.CurrentState);
         }
 
         [TestMethod]
-        public void Test_TestingToDeploying()
+        public void QA_Fail_ReturnsTo_Development()
         {
-            _bug.Fire(Trigger.Create);
-            _bug.Fire(Trigger.AssignToFix);
-            _bug.Fire(Trigger.Fixed);
-            _bug.Fire(Trigger.ReviewPassed);
-            _bug.Fire(Trigger.TesterConfirmFixed);
-            Assert.AreEqual(State.Deploying, _bug.CurrentState);
+            _testBug.ExecuteAction(BugAction.BeginTriage);
+            _testBug.ExecuteAction(BugAction.StartDevelopment);
+            _testBug.ExecuteAction(BugAction.FinishDevelopment);
+            _testBug.ExecuteAction(BugAction.ApproveCodeReview);
+            _testBug.ExecuteAction(BugAction.FailQA);
+            
+            Assert.AreEqual(BugState.Development, _testBug.CurrentState);
         }
 
         [TestMethod]
-        public void Test_TestingToAnalysis()
+        public void QA_Pass_MovesTo_CustomerAcceptance()
         {
-            _bug.Fire(Trigger.Create);
-            _bug.Fire(Trigger.AssignToFix);
-            _bug.Fire(Trigger.Fixed);
-            _bug.Fire(Trigger.ReviewPassed);
-            _bug.Fire(Trigger.TesterDenyFixed);
-            Assert.AreEqual(State.Analysis, _bug.CurrentState);
+            _testBug.ExecuteAction(BugAction.BeginTriage);
+            _testBug.ExecuteAction(BugAction.StartDevelopment);
+            _testBug.ExecuteAction(BugAction.FinishDevelopment);
+            _testBug.ExecuteAction(BugAction.ApproveCodeReview);
+            _testBug.ExecuteAction(BugAction.PassQA);
+            
+            Assert.AreEqual(BugState.CustomerAcceptance, _testBug.CurrentState);
         }
 
         [TestMethod]
-        public void Test_DeploySuccess_ToClosed()
+        public void Customer_Reject_ReturnsTo_Development()
         {
-            _bug.Fire(Trigger.Create);
-            _bug.Fire(Trigger.AssignToFix);
-            _bug.Fire(Trigger.Fixed);
-            _bug.Fire(Trigger.ReviewPassed);
-            _bug.Fire(Trigger.TesterConfirmFixed);
-            _bug.Fire(Trigger.DeploySuccess);
-            Assert.AreEqual(State.Closed, _bug.CurrentState);
+            _testBug.ExecuteAction(BugAction.BeginTriage);
+            _testBug.ExecuteAction(BugAction.StartDevelopment);
+            _testBug.ExecuteAction(BugAction.FinishDevelopment);
+            _testBug.ExecuteAction(BugAction.ApproveCodeReview);
+            _testBug.ExecuteAction(BugAction.PassQA);
+            _testBug.ExecuteAction(BugAction.RejectByCustomer);
+            
+            Assert.AreEqual(BugState.Development, _testBug.CurrentState);
         }
 
         [TestMethod]
-        public void Test_DeployFailed_ToFixing()
+        public void Customer_Accept_ClosesBug()
         {
-            _bug.Fire(Trigger.Create);
-            _bug.Fire(Trigger.AssignToFix);
-            _bug.Fire(Trigger.Fixed);
-            _bug.Fire(Trigger.ReviewPassed);
-            _bug.Fire(Trigger.TesterConfirmFixed);
-            _bug.Fire(Trigger.DeployFailed);
-            Assert.AreEqual(State.Fixing, _bug.CurrentState);
+            _testBug.ExecuteAction(BugAction.BeginTriage);
+            _testBug.ExecuteAction(BugAction.StartDevelopment);
+            _testBug.ExecuteAction(BugAction.FinishDevelopment);
+            _testBug.ExecuteAction(BugAction.ApproveCodeReview);
+            _testBug.ExecuteAction(BugAction.PassQA);
+            _testBug.ExecuteAction(BugAction.AcceptByCustomer);
+            
+            Assert.AreEqual(BugState.Closed, _testBug.CurrentState);
         }
 
         [TestMethod]
-        public void Test_ClosedToAnalysis_Reopen()
+        public void ClosedBug_CanBe_Reopened()
         {
-            _bug.Fire(Trigger.Create);
-            _bug.Fire(Trigger.DeclineNotADefect);
-            _bug.Fire(Trigger.Reopen);
-            Assert.AreEqual(State.Analysis, _bug.CurrentState);
+            _testBug.ExecuteAction(BugAction.BeginTriage);
+            _testBug.ExecuteAction(BugAction.MarkAsDuplicate);
+            _testBug.ExecuteAction(BugAction.ReopenIssue);
+            
+            Assert.AreEqual(BugState.Triage, _testBug.CurrentState);
         }
 
         [TestMethod]
-        public void Test_InvalidTransition_CreateWhenAlreadyCreated()
+        public void InvalidAction_Throws_InvalidOperationException()
         {
-            _bug.Fire(Trigger.Create);
+            // Bug is in 'Created' state, we try to start development immediately
             bool thrown = false;
-            try { _bug.Fire(Trigger.Create); } 
+            try { _testBug.ExecuteAction(BugAction.StartDevelopment); }
             catch (InvalidOperationException) { thrown = true; }
             Assert.IsTrue(thrown, "Expected InvalidOperationException");
         }
 
         [TestMethod]
-        public void Test_InvalidTransition_AssignWhenNew()
+        public void ReopenIssue_ThrowsException_IfBugIsNotClosed()
         {
+            _testBug.ExecuteAction(BugAction.BeginTriage);
+            // Bug is in Triage, not Closed
             bool thrown = false;
-            try { _bug.Fire(Trigger.AssignToFix); } 
+            try { _testBug.ExecuteAction(BugAction.ReopenIssue); }
             catch (InvalidOperationException) { thrown = true; }
             Assert.IsTrue(thrown, "Expected InvalidOperationException");
         }
 
         [TestMethod]
-        public void Test_InvalidTransition_FixedWhenAnalysis()
+        public void DuplicateTransition_ThrowsException()
         {
-            _bug.Fire(Trigger.Create);
+            _testBug.ExecuteAction(BugAction.BeginTriage);
             bool thrown = false;
-            try { _bug.Fire(Trigger.Fixed); } 
+            try { _testBug.ExecuteAction(BugAction.BeginTriage); }
             catch (InvalidOperationException) { thrown = true; }
             Assert.IsTrue(thrown, "Expected InvalidOperationException");
         }
 
         [TestMethod]
-        public void Test_InvalidTransition_CreateWhenClosed()
+        public void CanExecuteAction_ReturnsTrue_ForValidAction()
         {
-            _bug.Fire(Trigger.Create);
-            _bug.Fire(Trigger.DeclineNotADefect);
-            bool thrown = false;
-            try { _bug.Fire(Trigger.Create); } 
-            catch (InvalidOperationException) { thrown = true; }
-            Assert.IsTrue(thrown, "Expected InvalidOperationException");
+            Assert.IsTrue(_testBug.CanExecuteAction(BugAction.BeginTriage));
         }
 
         [TestMethod]
-        public void Test_InvalidTransition_ReviewPassedWhenNotReview()
+        public void CanExecuteAction_ReturnsFalse_ForInvalidAction()
         {
-            _bug.Fire(Trigger.Create);
-            bool thrown = false;
-            try { _bug.Fire(Trigger.ReviewPassed); } 
-            catch (InvalidOperationException) { thrown = true; }
-            Assert.IsTrue(thrown, "Expected InvalidOperationException");
+            Assert.IsFalse(_testBug.CanExecuteAction(BugAction.FinishDevelopment));
+        }
+        
+        [TestMethod]
+        public void FullWorkflow_SunnyDayScenario()
+        {
+            _testBug.ExecuteAction(BugAction.BeginTriage);
+            _testBug.ExecuteAction(BugAction.StartDevelopment);
+            _testBug.ExecuteAction(BugAction.FinishDevelopment);
+            _testBug.ExecuteAction(BugAction.ApproveCodeReview);
+            _testBug.ExecuteAction(BugAction.PassQA);
+            _testBug.ExecuteAction(BugAction.AcceptByCustomer);
+            
+            Assert.AreEqual(BugState.Closed, _testBug.CurrentState);
         }
     }
 }

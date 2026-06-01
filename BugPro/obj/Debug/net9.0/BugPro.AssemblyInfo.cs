@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BugPro")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a5a4bb853e1af9838a41abbc169d140851fa99d1")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e65bf7438b3ff8816f7f94cdf16c9e37a1428f79")]
 [assembly: System.Reflection.AssemblyProductAttribute("BugPro")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BugPro")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

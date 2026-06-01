@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Ahe3meCXAW4=",
+  "dgSpecHash": "eTQk/dkdr6M=",
   "success": true,
-  "projectFilePath": "C:\\Users\\vladb\\UT2026\\ST-4\\BugTests\\BugTests.csproj",
+  "projectFilePath": "c:\\Users\\vladb\\UT2026\\ST-4\\BugTests\\BugTests.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\vladb\\.nuget\\packages\\microsoft.applicationinsights\\2.23.0\\microsoft.applicationinsights.2.23.0.nupkg.sha512",
     "C:\\Users\\vladb\\.nuget\\packages\\microsoft.codecoverage\\18.0.1\\microsoft.codecoverage.18.0.1.nupkg.sha512",
@@ -32,7 +32,10 @@
     "C:\\Users\\vladb\\.nuget\\packages\\system.reflection.metadata\\8.0.0\\system.reflection.metadata.8.0.0.nupkg.sha512",
     "C:\\Users\\vladb\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\6.0.0\\system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512",
     "C:\\Users\\vladb\\.nuget\\packages\\system.text.encodings.web\\6.0.1\\system.text.encodings.web.6.0.1.nupkg.sha512",
-    "C:\\Users\\vladb\\.nuget\\packages\\system.text.json\\6.0.11\\system.text.json.6.0.11.nupkg.sha512"
+    "C:\\Users\\vladb\\.nuget\\packages\\system.text.json\\6.0.11\\system.text.json.6.0.11.nupkg.sha512",
+    "C:\\Users\\vladb\\.nuget\\packages\\microsoft.netcore.app.ref\\9.0.16\\microsoft.netcore.app.ref.9.0.16.nupkg.sha512",
+    "C:\\Users\\vladb\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\9.0.16\\microsoft.windowsdesktop.app.ref.9.0.16.nupkg.sha512",
+    "C:\\Users\\vladb\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\9.0.16\\microsoft.aspnetcore.app.ref.9.0.16.nupkg.sha512"
   ],
   "logs": []
 }

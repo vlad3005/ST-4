@@ -3,94 +3,121 @@ using Stateless;
 
 namespace BugPro
 {
-    public enum State
+    public enum BugState
     {
-        New,
-        Analysis,
-        Fixing,
-        Testing,
-        CannotReproduceReview,
-        Closed,
-        InReview,
-        Deploying
+        Created,
+        Triage,
+        Development,
+        UnreproducibleCheck,
+        CodeReview,
+        QA,
+        CustomerAcceptance,
+        Closed
     }
 
-    public enum Trigger
+    public enum BugAction
     {
-        Create,
-        AssignToFix,
-        DeclineNotADefect,
-        DeclineWontFix,
-        DeclineDuplicate,
-        NoTimeNow,
-        NeedSeparateSolution,
-        OtherProductProblem,
-        NeedMoreInfo,
-        DeveloperCannotReproduce,
-        Fixed,
-        TesterConfirmCannotReproduce,
-        TesterDenyCannotReproduce,
-        TesterConfirmFixed,
-        TesterDenyFixed,
-        Reopen,
-        SendToReview,
-        ReviewPassed,
-        ReviewFailed,
-        DeployAction,
-        DeploySuccess,
-        DeployFailed
+        BeginTriage,
+        
+        // Triage to Closed
+        MarkAsNotDefect,
+        MarkAsDuplicate,
+        MarkAsWontFix,
+        
+        // Triage to Dev
+        StartDevelopment,
+        
+        // Dev to Triage
+        PostponeLackOfTime,
+        RequireArchitecturalChange,
+        MoveToOtherProduct,
+        RequestMoreInformation,
+        
+        // Dev to Unreproducible
+        CannotReproduce,
+        
+        // Unreproducible to Closed/Triage
+        ConfirmCannotReproduce,
+        RejectCannotReproduce,
+        
+        // Dev to Review
+        FinishDevelopment,
+        
+        // Review to QA/Dev
+        ApproveCodeReview,
+        RejectCodeReview,
+        
+        // QA to CustomerAcceptance/Dev
+        PassQA,
+        FailQA,
+        
+        // CustomerAcceptance to Closed/Dev
+        AcceptByCustomer,
+        RejectByCustomer,
+        
+        // Closed to Triage
+        ReopenIssue
     }
 
     public class Bug
     {
-        private readonly StateMachine<State, Trigger> _machine;
+        private readonly StateMachine<BugState, BugAction> _workflow;
 
-        public State CurrentState => _machine.State;
-        
+        public BugState CurrentState => _workflow.State;
+
         public Bug()
         {
-            _machine = new StateMachine<State, Trigger>(State.New);
-
-            _machine.Configure(State.New)
-                .Permit(Trigger.Create, State.Analysis);
-
-            _machine.Configure(State.Analysis)
-                .Permit(Trigger.AssignToFix, State.Fixing)
-                .Permit(Trigger.DeclineNotADefect, State.Closed)
-                .Permit(Trigger.DeclineWontFix, State.Closed)
-                .Permit(Trigger.DeclineDuplicate, State.Closed);
-
-            _machine.Configure(State.Fixing)
-                .Permit(Trigger.NoTimeNow, State.Analysis)
-                .Permit(Trigger.NeedSeparateSolution, State.Analysis)
-                .Permit(Trigger.OtherProductProblem, State.Analysis)
-                .Permit(Trigger.NeedMoreInfo, State.Analysis)
-                .Permit(Trigger.DeveloperCannotReproduce, State.CannotReproduceReview)
-                .Permit(Trigger.Fixed, State.InReview); 
-
-            _machine.Configure(State.InReview)
-                .Permit(Trigger.ReviewPassed, State.Testing)
-                .Permit(Trigger.ReviewFailed, State.Fixing);
-
-            _machine.Configure(State.CannotReproduceReview)
-                .Permit(Trigger.TesterConfirmCannotReproduce, State.Closed)
-                .Permit(Trigger.TesterDenyCannotReproduce, State.Analysis);
-
-            _machine.Configure(State.Testing)
-                .Permit(Trigger.TesterConfirmFixed, State.Deploying) 
-                .Permit(Trigger.TesterDenyFixed, State.Analysis);
-
-            _machine.Configure(State.Deploying)
-                .Permit(Trigger.DeploySuccess, State.Closed)
-                .Permit(Trigger.DeployFailed, State.Fixing);
-
-            _machine.Configure(State.Closed)
-                .Permit(Trigger.Reopen, State.Analysis);
+            _workflow = new StateMachine<BugState, BugAction>(BugState.Created);
+            SetupStateMachine();
         }
 
-        public void Fire(Trigger trigger)
+        private void SetupStateMachine()
         {
-            _machine.Fire(trigger);
+            _workflow.Configure(BugState.Created)
+                .Permit(BugAction.BeginTriage, BugState.Triage);
+
+            _workflow.Configure(BugState.Triage)
+                .Permit(BugAction.MarkAsNotDefect, BugState.Closed)
+                .Permit(BugAction.MarkAsDuplicate, BugState.Closed)
+                .Permit(BugAction.MarkAsWontFix, BugState.Closed)
+                .Permit(BugAction.StartDevelopment, BugState.Development);
+
+            _workflow.Configure(BugState.Development)
+                .Permit(BugAction.PostponeLackOfTime, BugState.Triage)
+                .Permit(BugAction.RequireArchitecturalChange, BugState.Triage)
+                .Permit(BugAction.MoveToOtherProduct, BugState.Triage)
+                .Permit(BugAction.RequestMoreInformation, BugState.Triage)
+                .Permit(BugAction.CannotReproduce, BugState.UnreproducibleCheck)
+                .Permit(BugAction.FinishDevelopment, BugState.CodeReview);
+
+            _workflow.Configure(BugState.UnreproducibleCheck)
+                .Permit(BugAction.ConfirmCannotReproduce, BugState.Closed)
+                .Permit(BugAction.RejectCannotReproduce, BugState.Triage);
+
+            _workflow.Configure(BugState.CodeReview)
+                .Permit(BugAction.ApproveCodeReview, BugState.QA)
+                .Permit(BugAction.RejectCodeReview, BugState.Development);
+
+            _workflow.Configure(BugState.QA)
+                .Permit(BugAction.PassQA, BugState.CustomerAcceptance)
+                .Permit(BugAction.FailQA, BugState.Development);
+
+            _workflow.Configure(BugState.CustomerAcceptance)
+                .Permit(BugAction.AcceptByCustomer, BugState.Closed)
+                .Permit(BugAction.RejectByCustomer, BugState.Development);
+
+            _workflow.Configure(BugState.Closed)
+                .Permit(BugAction.ReopenIssue, BugState.Triage);
+        }
+
+        public void ExecuteAction(BugAction action)
+        {
+            _workflow.Fire(action);
+        }
+
+        public bool CanExecuteAction(BugAction action)
+        {
+            return _workflow.CanFire(action);
         }
     }
 
@@ -98,27 +125,36 @@ namespace BugPro
     {
         public static void Main(string[] args)
         {
-            Console.WriteLine("Демонстрация WorkFlow работы с багом с использованием Stateless\n");
-            var bug = new Bug();
-            Console.WriteLine($"Начальное состояние: {bug.CurrentState}");
+            Console.WriteLine("=== Bug Workflow Tracker ===");
+            var bugTracker = new Bug();
+            Console.WriteLine($"[1] Initial phase: {bugTracker.CurrentState}");
+
+            bugTracker.ExecuteAction(BugAction.BeginTriage);
+            Console.WriteLine($"[2] Action applied [BeginTriage] -> New phase: {bugTracker.CurrentState}");
+
+            bugTracker.ExecuteAction(BugAction.StartDevelopment);
+            Console.WriteLine($"[3] Action applied [StartDevelopment] -> New phase: {bugTracker.CurrentState}");
+
+            bugTracker.ExecuteAction(BugAction.CannotReproduce);
+            Console.WriteLine($"[4] Action applied [CannotReproduce] -> New phase: {bugTracker.CurrentState}");
+
+            bugTracker.ExecuteAction(BugAction.RejectCannotReproduce);
+            Console.WriteLine($"[5] Action applied [RejectCannotReproduce] -> New phase: {bugTracker.CurrentState}");
+
+            bugTracker.ExecuteAction(BugAction.StartDevelopment);
+            bugTracker.ExecuteAction(BugAction.FinishDevelopment);
+            Console.WriteLine($"[6] Action applied [FinishDevelopment] -> New phase: {bugTracker.CurrentState}");
+
+            bugTracker.ExecuteAction(BugAction.ApproveCodeReview);
+            Console.WriteLine($"[7] Action applied [ApproveCodeReview] -> New phase: {bugTracker.CurrentState}");
+
+            bugTracker.ExecuteAction(BugAction.PassQA);
+            Console.WriteLine($"[8] Action applied [PassQA] -> New phase: {bugTracker.CurrentState}");
+
+            bugTracker.ExecuteAction(BugAction.AcceptByCustomer);
+            Console.WriteLine($"[9] Action applied [AcceptByCustomer] -> New phase: {bugTracker.CurrentState}");
             
-            bug.Fire(Trigger.Create);
-            Console.WriteLine($"После создания [Create]: {bug.CurrentState}");
-            
-            bug.Fire(Trigger.AssignToFix);
-            Console.WriteLine($"После взятия в работу [AssignToFix]: {bug.CurrentState}");
-
-            bug.Fire(Trigger.Fixed);
-            Console.WriteLine($"После исправления разработчиком [Fixed]: {bug.CurrentState}");
-
-            bug.Fire(Trigger.ReviewPassed);
-            Console.WriteLine($"После успешного код ревью [ReviewPassed]: {bug.CurrentState}");
-
-            bug.Fire(Trigger.TesterConfirmFixed);
-            Console.WriteLine($"После проверки тестировщиком (ОК) [TesterConfirmFixed]: {bug.CurrentState}");
-
-            bug.Fire(Trigger.DeploySuccess);
-            Console.WriteLine($"После успешного внедрения [DeploySuccess]: {bug.CurrentState}");
+            Console.WriteLine("=== Workflow completed successfully ===");
         }
     }
 }

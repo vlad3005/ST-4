@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\vladb\\UT2026\\ST-4\\BugTests\\BugTests.csproj": {}
+    "c:\\Users\\vladb\\UT2026\\ST-4\\BugTests\\BugTests.csproj": {}
   },
   "projects": {
-    "C:\\Users\\vladb\\UT2026\\ST-4\\BugPro\\BugPro.csproj": {
+    "c:\\Users\\vladb\\UT2026\\ST-4\\BugPro\\BugPro.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\vladb\\UT2026\\ST-4\\BugPro\\BugPro.csproj",
+        "projectUniqueName": "c:\\Users\\vladb\\UT2026\\ST-4\\BugPro\\BugPro.csproj",
         "projectName": "BugPro",
-        "projectPath": "C:\\Users\\vladb\\UT2026\\ST-4\\BugPro\\BugPro.csproj",
+        "projectPath": "c:\\Users\\vladb\\UT2026\\ST-4\\BugPro\\BugPro.csproj",
         "packagesPath": "C:\\Users\\vladb\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\vladb\\UT2026\\ST-4\\BugPro\\obj\\",
+        "outputPath": "c:\\Users\\vladb\\UT2026\\ST-4\\BugPro\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -66,23 +66,41 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[9.0.16, 9.0.16]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Host.win-x64",
+              "version": "[9.0.16, 9.0.16]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[9.0.16, 9.0.16]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[9.0.16, 9.0.16]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.201/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.204/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\vladb\\UT2026\\ST-4\\BugTests\\BugTests.csproj": {
+    "c:\\Users\\vladb\\UT2026\\ST-4\\BugTests\\BugTests.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\vladb\\UT2026\\ST-4\\BugTests\\BugTests.csproj",
+        "projectUniqueName": "c:\\Users\\vladb\\UT2026\\ST-4\\BugTests\\BugTests.csproj",
         "projectName": "BugTests",
-        "projectPath": "C:\\Users\\vladb\\UT2026\\ST-4\\BugTests\\BugTests.csproj",
+        "projectPath": "c:\\Users\\vladb\\UT2026\\ST-4\\BugTests\\BugTests.csproj",
         "packagesPath": "C:\\Users\\vladb\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\vladb\\UT2026\\ST-4\\BugTests\\obj\\",
+        "outputPath": "c:\\Users\\vladb\\UT2026\\ST-4\\BugTests\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -103,8 +121,8 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "C:\\Users\\vladb\\UT2026\\ST-4\\BugPro\\BugPro.csproj": {
-                "projectPath": "C:\\Users\\vladb\\UT2026\\ST-4\\BugPro\\BugPro.csproj"
+              "c:\\Users\\vladb\\UT2026\\ST-4\\BugPro\\BugPro.csproj": {
+                "projectPath": "c:\\Users\\vladb\\UT2026\\ST-4\\BugPro\\BugPro.csproj"
               }
             }
           }
@@ -141,12 +159,26 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[9.0.16, 9.0.16]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[9.0.16, 9.0.16]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[9.0.16, 9.0.16]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.201/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.204/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
