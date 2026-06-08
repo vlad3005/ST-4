@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "vF3PEOVN0uA=",
+  "dgSpecHash": "nNQZMqZ5i4c=",
   "success": true,
-  "projectFilePath": "c:\\Users\\vladb\\UT2026\\ST-4\\BugPro\\BugPro.csproj",
+  "projectFilePath": "C:\\Users\\vladb\\UT2026\\ST-4\\BugPro\\BugPro.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\vladb\\.nuget\\packages\\stateless\\5.13.0\\stateless.5.13.0.nupkg.sha512",
     "C:\\Users\\vladb\\.nuget\\packages\\microsoft.netcore.app.ref\\9.0.16\\microsoft.netcore.app.ref.9.0.16.nupkg.sha512",

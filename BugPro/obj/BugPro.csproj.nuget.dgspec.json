@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Users\\vladb\\UT2026\\ST-4\\BugPro\\BugPro.csproj": {}
+    "C:\\Users\\vladb\\UT2026\\ST-4\\BugPro\\BugPro.csproj": {}
   },
   "projects": {
-    "c:\\Users\\vladb\\UT2026\\ST-4\\BugPro\\BugPro.csproj": {
+    "C:\\Users\\vladb\\UT2026\\ST-4\\BugPro\\BugPro.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\vladb\\UT2026\\ST-4\\BugPro\\BugPro.csproj",
+        "projectUniqueName": "C:\\Users\\vladb\\UT2026\\ST-4\\BugPro\\BugPro.csproj",
         "projectName": "BugPro",
-        "projectPath": "c:\\Users\\vladb\\UT2026\\ST-4\\BugPro\\BugPro.csproj",
+        "projectPath": "C:\\Users\\vladb\\UT2026\\ST-4\\BugPro\\BugPro.csproj",
         "packagesPath": "C:\\Users\\vladb\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\vladb\\UT2026\\ST-4\\BugPro\\obj\\",
+        "outputPath": "C:\\Users\\vladb\\UT2026\\ST-4\\BugPro\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
